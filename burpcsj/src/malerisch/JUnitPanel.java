@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+
 import burp.IBurpExtenderCallbacks;
 import burp.IHttpRequestResponse;
 import burp.ISessionHandlingAction;
@@ -13,8 +14,17 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 
-
+import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+import org.junit.*;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.WebDriverException;
 
 public class JUnitPanel extends javax.swing.JPanel {
     
@@ -241,12 +251,8 @@ final IBurpExtenderCallbacks callbacks;
 			
 			 final InterfaceTest hello = new InterfaceTest(classy,desc);
 			 
-			 System.out.println(callbacks.getBurpVersion());
-			 //System.out.println(hello);
-			 //System.out.println(hello.getActionName());
-			 //IHttpRequestResponse[] macroItems = null;
-			//IHttpRequestResponse currentRequest = null;
-			//hello.performAction(currentRequest, macroItems);
+			 //System.out.println(callbacks.getBurpVersion());
+			 
 			 
 			 try {
 				 callbacks.registerSessionHandlingAction(hello);
@@ -254,12 +260,10 @@ final IBurpExtenderCallbacks callbacks;
 			 }
 			catch (Throwable e) {
 				
-				//System.out.println(e);
+				System.out.println("Stack trace for Registration: "+e);
 				
 			}
-			//register(classy);
 			
-			//JUnitCore.runClasses(classy);
 			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -299,17 +303,65 @@ final IBurpExtenderCallbacks callbacks;
         @Override
     public void run() {
         System.out.println("JUnit thread started");
+        for (URL url :
+            ((URLClassLoader) (Thread.currentThread()
+                .getContextClassLoader())).getURLs()) {
+        	
+        	//System.out.println("K: "+url);
+        	
+        }
+        System.out.println("Loaded class: "+classy);
+        JUnitCore junit = new JUnitCore();
+        Result result = null;
         
-        JUnitCore.runClasses(classy);
+        try{
+        result = junit.run(classy);
+        }
+        catch (Throwable e) {
         
+        	System.out.println(e.getStackTrace());
+        	
+        }
+        //JUnitCore.main(classy);
+       //result.createListener()
        
+        //System.out.println("Failure count: "+result.getFailureCount());
+        List<Failure> failures = result.getFailures();
+        
+        
+        int i;
+        
+        for(i=0;i<result.getFailureCount();i++) {
+        	
+        	//System.out.println(failures.get(i));
+        
+        	Failure e = failures.get(i);
+        	
+        	System.out.println(e.getException());
+        	System.out.println(e.getDescription());
+        	System.out.println(e.getException());
+        	System.out.println(e.getMessage());
+        	System.out.println(e.getTrace());
+        	
+        	
+        	
+        }
+        
+        if (result.wasSuccessful()) {
+        	
+        	System.out.println("JUnit executed with success");
+        	
+        }
+        //JUnitCore.runClasses(classy);
+        
+        //System.out.println(result);
 
         
         }
         
     }    
     
-public static Class loadJUnit(String junitfile, String classToBeLoaded) throws MalformedURLException {
+public Class loadJUnit(String junitfile, String classToBeLoaded) throws MalformedURLException {
     	
     	
     	Class classy = null;
@@ -317,12 +369,19 @@ public static Class loadJUnit(String junitfile, String classToBeLoaded) throws M
     	String url2 = "file://" + junitfile.replace("\\","/");
     	
     	URL url = new URL(url2);
+   
+        URLClassLoader loader = new URLClassLoader(new URL[] {url}, this.getClass().getClassLoader());
         
-        URLClassLoader loader = new URLClassLoader(new URL[]{url});
+        
+        
+        //System.out.println(loader.getSystemClassLoader());
        
         try {
+        	
+        
             classy = loader.loadClass(classToBeLoaded);
-            System.out.println(classy.getCanonicalName());
+            //System.out.println(classy.getClassLoader());
+            //System.out.println(classy.getCanonicalName());
             
             //JUnitCore.runClasses(classy);
             
@@ -362,7 +421,7 @@ public static Class loadJUnit(String junitfile, String classToBeLoaded) throws M
                  }
                  System.out.println(result.wasSuccessful());
                  
-            	System.out.println("FUCK2");
+            	
             	
             }
           

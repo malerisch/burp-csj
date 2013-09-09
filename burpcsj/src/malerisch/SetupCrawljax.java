@@ -1,7 +1,6 @@
 package malerisch;
 
 import java.net.*;
-
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +18,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+//import org.openqa.selenium.phantomjs.PhantomJSDriver;
+//import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -147,6 +148,8 @@ if (tab.tab.Browser.getSelectedItem().toString() == "PhantomJS") {
            profile.setPreference("network.proxy.socks_port", port);
             profile.setPreference("network.proxy.ftp", host);
             profile.setPreference("network.proxy.ftp_port", port);
+            
+           
             				
 			}
 			
@@ -161,7 +164,7 @@ if (tab.tab.Browser.getSelectedItem().toString() == "PhantomJS") {
 				
 			
 		      
-		      System.out.println(drivertest.getCurrentUrl());
+		      //System.out.println(drivertest.getCurrentUrl());
 		      
 		      // we need to fetch cookies from the cookie jar BEFORE first GET request
 		      List<ICookie> cookies = callbacks.getCookieJarContents();
@@ -169,21 +172,21 @@ if (tab.tab.Browser.getSelectedItem().toString() == "PhantomJS") {
 		      for(ICookie o: cookies) {
 					
 					//System.out.println("GetHost(): "+Url.getHost().toString());	
-					System.out.println("BEFORE");
-		    	  System.out.println("o.getDomain(): "+o.getDomain());
-					System.out.println("o.getName():" +o.getName());
-					System.out.println("o.getValue():"+o.getValue());
+					//System.out.println("BEFORE");
+		    	  //System.out.println("o.getDomain(): "+o.getDomain());
+					//System.out.println("o.getName():" +o.getName());
+					//System.out.println("o.getValue():"+o.getValue());
 					
 		      }
 		      
 		      
 		      try {
 		    	  drivertest.get(url);
-		    	  System.out.println("First GET request done");
+		    	  //System.out.println("First GET request done");
 		    	  
 		    	  
 			      drivertest.manage().deleteAllCookies();
-			      System.out.println("Cookie should be destroyed - is that true?");
+			      //System.out.println("Cookie should be destroyed - is that true?");
 			      
 			      
 			    
@@ -203,22 +206,22 @@ if (tab.tab.Browser.getSelectedItem().toString() == "PhantomJS") {
 					
 						
 						
-						System.out.println("LATER");
-					System.out.println("GetHost(): "+Url.getHost().toString());	
-					System.out.println("o.getDomain(): "+o.getDomain());
-					System.out.println("o.getName():" +o.getName());
-					System.out.println("o.getValue():"+o.getValue());
+						//System.out.println("LATER");
+					//System.out.println("GetHost(): "+Url.getHost().toString());	
+					//System.out.println("o.getDomain(): "+o.getDomain());
+					//System.out.println("o.getName():" +o.getName());
+					//System.out.println("o.getValue():"+o.getValue());
 					
 					String fullhost = Url.getHost().toString();
 					
 					 String[] arr = fullhost.split("\\.");
 					    //should check the size of arr here
-					    System.out.println(arr[arr.length-2] + '.' + arr[arr.length-1]);
+					    //System.out.println(arr[arr.length-2] + '.' + arr[arr.length-1]);
 					
 					    String topdomain = arr[arr.length-2] + '.' + arr[arr.length-1];
 					
-					 System.out.println("topdomain: " +topdomain);   
-					 System.out.println("o.getDomain()" + o.getDomain().toString());
+					 //System.out.println("topdomain: " +topdomain);   
+					 //System.out.println("o.getDomain()" + o.getDomain().toString());
 				
 					 
 					 
@@ -246,6 +249,7 @@ if (tab.tab.Browser.getSelectedItem().toString() == "PhantomJS") {
 			      
 			      System.out.println(e);  
 			      }
+		      
 				
 			}
 			
@@ -273,7 +277,10 @@ private EmbeddedBrowser newIEBrowser() {
 	capability.setCapability("initialBrowserUrl",url);
 	capability.setCapability("ignoreZoomSetting", true);
 	capability.setCapability("ignoreProtectedModeSettings", true);
-			
+	
+	//capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true); 
+    //capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		
 			
 			if (tab.tab.manualproxy.isSelected()) {
 				
@@ -340,6 +347,7 @@ private EmbeddedBrowser newIEBrowser() {
 			
 		      try {
 		    	  drivertest.get(url);
+		    	  drivertest.navigate().to("javascript:document.getElementById('overridelink').click()");
 		    	  System.out.println("First GET request done");
 			      drivertest.manage().deleteAllCookies();
 			      System.out.println("Cookie should be destroyed - is that true?");
@@ -538,7 +546,10 @@ File file = new File(phantompath);
 DesiredCapabilities capability = new DesiredCapabilities();
 
 capability.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-        file.getAbsolutePath());   
+        file.getAbsolutePath());
+
+//capability.setCapability("acceptSslCerts", true);
+
 
 	
 	if (tab.tab.manualproxy.isSelected()) {
@@ -552,15 +563,24 @@ capability.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPER
 		proxy.setHttpProxy(PROXY)
 		     .setFtpProxy(PROXY)
 		     .setSslProxy(PROXY);
-			     
+			    
 			    
 			    capability.setCapability(CapabilityType.PROXY, proxy); 
     				
 	}
-	 capability.setCapability("takesScreenshot", false); 
+	
+	capability.setCapability("takesScreenshot", false); 
+	String[] args = { "--ignore-ssl-errors=yes" };
+	capability.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
+	
+	capability.setCapability("phantomjs.page.settings.userAgent","Mozilla/5.0 (Windows NT 5.1; rv:22.0) Gecko/20100101 Firefox/22.0");
+	
+	//System.out.println("Capability:" +capability);
+	
 	WebDriver drivertest = null;
 	try{
 	drivertest = new PhantomJSDriver(capability);
+	
 	}
 	
 	catch( Throwable e) {
@@ -666,7 +686,7 @@ private EmbeddedBrowser newRemoteBrowser() {
             				
 			}
 			 capability.setCapability("takesScreenshot", false); 
-			 
+		   
 			 
 			WebDriver drivertest = null;
 			
@@ -693,7 +713,7 @@ private EmbeddedBrowser newRemoteBrowser() {
 				
 			
 		      
-				 System.out.println(drivertest.getCurrentUrl());
+				 //System.out.println(drivertest.getCurrentUrl());
 			      
 			      // we need to fetch cookies from the cookie jar BEFORE first GET request
 			      List<ICookie> cookies = callbacks.getCookieJarContents();
@@ -701,10 +721,10 @@ private EmbeddedBrowser newRemoteBrowser() {
 			      for(ICookie o: cookies) {
 						
 						
-						System.out.println("BEFORE");
-			    	  System.out.println("o.getDomain(): "+o.getDomain());
-						System.out.println("o.getName():" +o.getName());
-						System.out.println("o.getValue():"+o.getValue());
+						//System.out.println("BEFORE");
+			    	  //System.out.println("o.getDomain(): "+o.getDomain());
+						//System.out.println("o.getName():" +o.getName());
+						//System.out.println("o.getValue():"+o.getValue());
 						
 			      }
 			
@@ -724,7 +744,7 @@ private EmbeddedBrowser newRemoteBrowser() {
 					 
 					for(ICookie o: cookies) {
 					
-					System.out.println(Url.getHost().toString());	
+					//System.out.println(Url.getHost().toString());	
 						
 					String fullhost = Url.getHost().toString();
 					
@@ -785,7 +805,7 @@ public CrawljaxConfigurationBuilder ChangeBrowserConfig(CrawljaxConfigurationBui
 	
     
     
-    System.out.println(CrawlPanel.Browser.getSelectedItem().toString());
+    //System.out.println(CrawlPanel.Browser.getSelectedItem().toString());
     
 
 	

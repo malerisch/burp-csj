@@ -3,6 +3,8 @@ package malerisch;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public void launchCrawljax(IHttpRequestResponse requestResponse) {
 	String url = info.getUrl().toString();
 
 
-    System.out.println("URL requested:" + url);
+    System.out.println("URL requested: " + url);
     
     
     Runnable MyThread = new ThreadCrawljax(url);
@@ -68,7 +70,13 @@ public class ThreadCrawljax implements Runnable {
     @Override
 public void run() {
     System.out.println("Crawljax Thread started");
-    
+    for (URL url :
+        ((URLClassLoader) (Thread.currentThread()
+            .getContextClassLoader())).getURLs()) {
+    	//Thread.currentThread().setContextClassLoader(cl);
+    	//System.out.println(url);
+    	
+    }
     SetupCrawljax MySetup = new SetupCrawljax(callbacks, helpers, tab, url);
     
     CrawljaxConfigurationBuilder builder = MySetup.setupBuilder(url);
