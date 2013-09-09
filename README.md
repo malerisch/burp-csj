@@ -1,14 +1,14 @@
 What is burpcsj?
 ================
 
-BurpCSJ is an extension written in Java for Burp Pro web proxy. 
-BurpCSJ integrates Crawljax, Selenium and JUnit together.
+BurpCSJ is an extension written in Java for [Burp Pro](http://portswigger.net/burp/) web proxy. 
+BurpCSJ integrates [Crawljax](http://www.crawljax.com), [Selenium](http://docs.seleniumhq.org/) and [JUnit](http://junit.org/) together.
 The intent of this extension is to aid web application security testing, increase web application crawling capability and speed-up complex test-cases.
 
 Quick Start
 ===========
 
-- Download the BurpCJS extension jar: burpcsj.jar 
+- [Download the BurpCJS extension jar](https://docs.google.com/uc?id=0BzURhVH9qFoQMDE1WmppRks3VTQ&export=download)
 - Load BurpCSJ extension jar via the Extender tab;
 - Choose the URL item from any Burp tab (e.g. target, proxy history, repeater); 
 - Right click on the URL item;
