@@ -22,7 +22,11 @@ Minimum Requirements
 - JRE or JDK 1.7;
 - A browser installed (e.g. Firefox);
 - If you intend to use JUnit, then you would need JDK to compile classes and Selenium IDE to export JUnit test cases
+<<<<<<< HEAD
 - Enough memory when starting Burp if you also want to use BurpCSJ (recommended to use a 64bit env)
+=======
+- Enough memory when starting Burp if you also want to use BurpCSJ (recommended to use a 64bits env)
+>>>>>>> 6c97b8db99ba7cc462d317d3a02851e2386e6f1d
 
 Extra
 =====
